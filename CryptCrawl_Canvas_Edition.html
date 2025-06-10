@@ -1,0 +1,117 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CryptCrawl: Echoes Below</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      background-color: black;
+      color: white;
+      font-family: monospace;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+    }
+    h1 {
+      font-size: 1.5em;
+      margin: 10px;
+      text-align: center;
+    }
+    #game {
+      width: 90vw;
+      max-width: 400px;
+      aspect-ratio: 1 / 1;
+      background-color: #111;
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      grid-template-rows: repeat(10, 1fr);
+      border: 2px solid #333;
+    }
+    .cell {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2em;
+    }
+    .player { color: #0f0; }
+    .ghost { color: #f00; }
+    .memory { color: #0ff; }
+    .wall { color: #555; }
+    #controls {
+      margin-top: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn {
+      background: #333;
+      color: white;
+      padding: 10px;
+      margin: 5px;
+      border: none;
+      font-size: 1.2em;
+      width: 60px;
+    }
+  </style>
+</head>
+<body>
+  <h1>CryptCrawl: Echoes Below</h1>
+  <div id="game"></div>
+  <div id="controls">
+    <button class="btn" onclick="movePlayer('ArrowUp')">⬆️</button><br>
+    <button class="btn" onclick="movePlayer('ArrowLeft')">⬅️</button>
+    <button class="btn" onclick="movePlayer('ArrowDown')">⬇️</button>
+    <button class="btn" onclick="movePlayer('ArrowRight')">➡️</button>
+  </div>
+  <script>
+    const gameSize = 10;
+    const game = document.getElementById('game');
+    const cells = [];
+    let playerPos = 0;
+
+    function drawGrid() {
+      game.innerHTML = '';
+      for (let i = 0; i < gameSize * gameSize; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('cell');
+        if (i === playerPos) cell.classList.add('player');
+        else if (i === 77) cell.classList.add('memory');
+        else if (i === 45) cell.classList.add('ghost');
+        else if ([11, 12, 13, 14].includes(i)) cell.classList.add('wall');
+        cell.textContent = getSymbol(i);
+        game.appendChild(cell);
+      }
+    }
+
+    function getSymbol(i) {
+      if (i === playerPos) return '@';
+      if (i === 77) return '*';
+      if (i === 45) return 'G';
+      if ([11, 12, 13, 14].includes(i)) return '#';
+      return '.';
+    }
+
+    function movePlayer(dir) {
+      let nextPos = playerPos;
+      if (dir === 'ArrowUp') nextPos -= gameSize;
+      if (dir === 'ArrowDown') nextPos += gameSize;
+      if (dir === 'ArrowLeft') nextPos -= 1;
+      if (dir === 'ArrowRight') nextPos += 1;
+      if (nextPos < 0 || nextPos >= gameSize * gameSize) return;
+      if ([11, 12, 13, 14].includes(nextPos)) return;
+      playerPos = nextPos;
+      drawGrid();
+    }
+
+    window.addEventListener('keydown', e => movePlayer(e.key));
+    drawGrid();
+  </script>
+</body>
+</html>
